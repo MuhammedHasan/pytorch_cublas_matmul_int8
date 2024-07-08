@@ -37,6 +37,8 @@ torch::Tensor transform_col32_to_row(torch::Tensor A)
 
     A = A.contiguous();
     int n = A.size(0), m = A.size(1);
+
+    torch::DeviceGuard device_guard(A.device());
     cublasLtHandle_t handle = reinterpret_cast<cublasLtHandle_t>(
         at::cuda::getCurrentCUDABlasHandle());
 
@@ -83,8 +85,14 @@ typedef enum Format_t
 template <int FORMAT>
 torch::Tensor transform_from_row_to(torch::Tensor A)
 {
+
     A = A.contiguous();
     int n = A.size(0), m = A.size(1);
+
+    auto options = torch::TensorOptions().dtype(torch::kInt8).device(A.device());
+    auto output = torch::empty({n, m}, options);
+
+    torch::DeviceGuard device_guard(A.device());
     cublasLtHandle_t handle = reinterpret_cast<cublasLtHandle_t>(
         at::cuda::getCurrentCUDABlasHandle());
 
@@ -92,9 +100,6 @@ torch::Tensor transform_from_row_to(torch::Tensor A)
     cublasCheck(cublasLtMatrixLayoutCreate(&Alayout, CUDA_R_8I, n, m, m));
     cublasLtOrder_t order = CUBLASLT_ORDER_ROW;
     SET_LAYOUT_ORDER(Alayout, order);
-
-    auto options = torch::TensorOptions().dtype(torch::kInt8).device(A.device());
-    auto output = torch::empty({n, m}, options);
 
     cublasLtMatrixLayout_t outLayout;
 
@@ -145,6 +150,7 @@ torch::Tensor int8_matmul_cublaslt(torch::Tensor A, torch::Tensor B)
     B = B.contiguous();
     int m = A.size(0), n = B.size(0), k = A.size(1);
 
+    torch::DeviceGuard device_guard(A.device());
     cublasLtHandle_t handle = reinterpret_cast<cublasLtHandle_t>(
         at::cuda::getCurrentCUDABlasHandle());
 
@@ -191,10 +197,21 @@ torch::Tensor int8_matmul_cublaslt(torch::Tensor A, torch::Tensor B)
     return output;
 }
 
+torch::Tensor create_output_tensor(torch::Tensor A)
+{
+    A = A.contiguous();
+    int n = A.size(0), m = A.size(1);
+    auto options = torch::TensorOptions().dtype(torch::kInt8).device(A.device());
+    auto output = torch::empty({n, m}, options);
+
+    return output;
+}
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m)
 {
     m.def("transform_from_row_to_ampere", &transform_from_row_to<AMPERE>, "transform from row to ampere");
     m.def("transform_from_row_to_col32", &transform_from_row_to<COL32>, "transform from row to col32");
     m.def("transform_col32_to_row", &transform_col32_to_row, "transform from col32 to row");
     m.def("matmul_int8", &int8_matmul_cublaslt, "int8 multiply using cuBLASLt");
+    m.def("create_output_tensor", &create_output_tensor, "create tensor");
 }

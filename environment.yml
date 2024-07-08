@@ -1,0 +1,15 @@
+name: matmul-int8
+channels:
+  - defaults
+  - conda-forge
+  - nvidia
+  - pytorch
+
+dependencies:
+  - python=3.11
+  - nvidia::cuda-toolkit=12.1
+  - pytorch::pytorch
+  - pytorch::pytorch-cuda=12.1
+
+  - pip:
+      - pytest

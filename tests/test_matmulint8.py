@@ -1,8 +1,8 @@
 import pytest
 import torch
 from torch_cublas_matmul_int8 import matmul_int8
+from conftest import device
 
-device = 0
 
 def test_matmul_int8():
 

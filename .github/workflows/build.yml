@@ -31,7 +31,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          conda install -y python=${{ matrix.python-version }} setuptools tqdm
+          conda install -y setuptools 
           conda install -y -c nvidia pytorch-cuda=12.1
           conda install -y -c pytorch pytorch
           conda install -y nvidia::cuda-toolkit=12.1

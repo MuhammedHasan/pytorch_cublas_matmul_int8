@@ -28,7 +28,7 @@ torch.matmul(A, B)
 # install pyTorch 
 conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia  
 # install cuda-tools
-conda install nvidia::cuda-toolkit
+conda install nvidia::cuda-toolkit=12.1
 # install the package
 pip install torch_cublas_matmul_int8
 ```

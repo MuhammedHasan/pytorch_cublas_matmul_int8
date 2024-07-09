@@ -11,8 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: nvidia/cuda:12.1-runtime-ubuntu20.04
 
     strategy:
       matrix:

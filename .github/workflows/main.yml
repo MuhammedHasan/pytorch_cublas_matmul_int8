@@ -41,7 +41,7 @@ jobs:
           export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
           cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_PLATFORM: manylinux2014_x86_64
+          CIBW_PLATFORM: linux
           CIBW_ENVIRONMENT: CUDA_HOME=/usr/local/cuda-12.1
 
       - name: Upload wheels

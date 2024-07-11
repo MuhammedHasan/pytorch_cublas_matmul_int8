@@ -30,8 +30,8 @@ jobs:
       - name: Install dependencies
         run: |
           conda install -y setuptools 
-          conda install -y pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
           conda install -y nvidia::cuda-toolkit=12.1
+          conda install -y pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
 
       - name: Install cibuildwheel
         run: pip install cibuildwheel
